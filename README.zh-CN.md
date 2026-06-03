@@ -15,6 +15,50 @@
   -> V2Ray Core VMess inbound
 ```
 
+
+## 最简单用法
+
+RayLite 的目标就是尽量傻瓜式部署：
+
+```text
+1. 先在 Cloudflare 里配置好域名 / 子域名到 VPS 公网 IP 的解析。
+2. SSH 登录 VPS。
+3. 执行一条命令。
+4. 导入脚本自动生成的 VMess 客户端链接。
+```
+
+示例：
+
+```bash
+git clone https://github.com/your-name/RayLite.git
+cd RayLite
+chmod +x setup-raylite.sh
+sudo env DOMAIN=v1.example.com bash setup-raylite.sh --yes
+```
+
+默认部署不需要你提前准备 UUID。脚本会自动生成 UUID，并同时写入服务端配置和客户端配置。安装完成后，直接查看可导入的客户端链接：
+
+```bash
+cat /root/raylite/client/v1.example.com.vmess.txt
+```
+
+默认技术栈：
+
+```text
+VMess + WebSocket + TLS + /ray + Nginx 伪装页面 + 可选 Cloudflare 反向代理
+```
+
+对普通用户来说，执行脚本前唯一必须手动准备的是域名解析：
+
+```text
+Cloudflare DNS：
+A 记录 -> VPS 公网 IP
+SSL/TLS -> Full 或 Full (strict)
+Network -> WebSockets -> On
+```
+
+复杂参数、故障排查、生成文件位置、手动配置说明都放在后文详细说明。
+
 ## 功能特性
 
 - 通过 V2Fly 官方 FHS 安装脚本安装 V2Ray Core。
@@ -361,8 +405,8 @@ certbot renew --dry-run
 
 特别感谢：
 
-- [V2Fly / V2Ray Core](https://github.com/v2fly/v2ray-core)：本项目使用的底层网络核心。
-- [fhs-install-v2ray](https://github.com/v2fly/fhs-install-v2ray)：本项目默认调用的官方 FHS 风格 V2Ray 安装脚本，也是 systemd 与包管理器适配逻辑的重要参考。
+- [V2Fly / V2Ray Core](https://github.com/v2fly/v2ray-core)
+- [fhs-install-v2ray](https://github.com/v2fly/fhs-install-v2ray)
 - [Nginx](https://nginx.org/)
 - [Let's Encrypt](https://letsencrypt.org/)
 - [Certbot](https://certbot.eff.org/)
@@ -376,6 +420,4 @@ certbot renew --dry-run
 
 ## 许可证
 
-RayLite 使用 [GNU General Public License v3.0](./LICENSE) 开源。除非你在 fork 中明确改为其他 GPLv3 兼容写法，本仓库建议使用 `GPL-3.0-only` SPDX 标识。
-
-本项目会调用并致谢 V2Fly 的 `fhs-install-v2ray` 安装脚本。V2Ray Core 本体遵循其上游许可证；RayLite 不会重新许可上游二进制文件。
+RayLite 使用 [GNU General Public License v3.0](./LICENSE)（GPL-3.0-only）开源。

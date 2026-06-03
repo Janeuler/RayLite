@@ -2,7 +2,7 @@
 
 [中文说明](./README.zh-CN.md)
 
-**RayLite** is a GPL-3.0 licensed one-click Linux deployment helper for **VMess + WebSocket + TLS + camouflage domain + optional Cloudflare reverse proxy**.
+**RayLite** is a one-click Linux deployment helper for **VMess + WebSocket + TLS + camouflage domain + optional Cloudflare reverse proxy**.
 
 It targets small VPS instances such as **1 vCPU / 512 MB RAM**. The server exposes only one WebSocket route, `/ray`, through Nginx. All other ordinary paths behave like a minimal static website, which makes the domain look like a normal HTTPS site.
 
@@ -14,6 +14,50 @@ Client
   -> 127.0.0.1:10086
   -> V2Ray Core VMess inbound
 ```
+
+
+## Simple usage
+
+RayLite is meant to be used in the simplest possible way:
+
+```text
+1. Create a Cloudflare DNS record and point your domain/subdomain to your VPS IP.
+2. SSH into the VPS.
+3. Run one command.
+4. Import the generated VMess client link.
+```
+
+Example:
+
+```bash
+git clone https://github.com/your-name/RayLite.git
+cd RayLite
+chmod +x setup-raylite.sh
+sudo env DOMAIN=v1.example.com bash setup-raylite.sh --yes
+```
+
+That is all for the default setup. The UUID is generated automatically by the script, so you do **not** need to prepare one manually. After installation, the importable client link is written to:
+
+```bash
+cat /root/raylite/client/v1.example.com.vmess.txt
+```
+
+Default stack:
+
+```text
+VMess + WebSocket + TLS + /ray + Nginx camouflage page + optional Cloudflare reverse proxy
+```
+
+For most users, the only required manual step before running the script is DNS setup:
+
+```text
+Cloudflare DNS:
+A record -> your VPS public IP
+SSL/TLS -> Full or Full (strict)
+Network -> WebSockets -> On
+```
+
+Advanced options, troubleshooting, generated file paths, and manual configuration notes are documented below.
 
 ## Features
 
@@ -361,8 +405,8 @@ This project is intended for lawful personal networking, private infrastructure 
 
 Special thanks to:
 
-- [V2Fly / V2Ray Core](https://github.com/v2fly/v2ray-core), the underlying network core used by this project.
-- [fhs-install-v2ray](https://github.com/v2fly/fhs-install-v2ray), the official FHS-style V2Ray installer invoked by default and an important reference for systemd/package-manager handling.
+- [V2Fly / V2Ray Core](https://github.com/v2fly/v2ray-core)
+- [fhs-install-v2ray](https://github.com/v2fly/fhs-install-v2ray)
 - [Nginx](https://nginx.org/)
 - [Let's Encrypt](https://letsencrypt.org/)
 - [Certbot](https://certbot.eff.org/)
@@ -376,6 +420,4 @@ Special thanks to:
 
 ## License
 
-RayLite is released under the [GNU General Public License v3.0](./LICENSE). Unless you explicitly choose otherwise in a fork, this repository uses the `GPL-3.0-only` SPDX identifier.
-
-The project invokes and credits V2Fly's `fhs-install-v2ray` installer. V2Ray Core itself is distributed under its own upstream license; RayLite does not relicense upstream binaries.
+RayLite is licensed under the [GNU General Public License v3.0](./LICENSE) (GPL-3.0-only).

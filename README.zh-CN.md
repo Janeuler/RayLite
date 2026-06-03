@@ -30,7 +30,7 @@ RayLite 的目标就是尽量傻瓜式部署：
 示例：
 
 ```bash
-git clone https://github.com/your-name/RayLite.git
+git clone https://github.com/janeuler/RayLite.git
 cd RayLite
 chmod +x setup-raylite.sh
 sudo env DOMAIN=v1.example.com bash setup-raylite.sh --yes
